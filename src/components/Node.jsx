@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Context } from '../Store';
 import './Node.css';
 
 const propTypes = {
@@ -7,7 +8,6 @@ const propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }).isRequired,
-  handleClick: PropTypes.func.isRequired,
   isStart: PropTypes.bool,
   isWall: PropTypes.bool,
   isVisited: PropTypes.bool,
@@ -24,12 +24,31 @@ const defaultProps = {
 };
 
 export default function Node({
-  pos, isStart, isTarget, isWall, isVisited, isPath, handleClick,
+  pos, isStart, isTarget, isWall, isVisited, isPath,
 }) {
+  const [state, setState] = useContext(Context);
+  const [wall, setWall] = useState(isWall);
+
+  function handleClick() {
+    if (!isStart && !isTarget) {
+      setWall(!wall);
+    }
+    /*
+    const currState = { ...state };
+    const { grid } = currState;
+    const node = grid[pos.y][pos.x];
+    if (!node.isStart && !node.isTarget) {
+      node.isWall = !node.isWall;
+      grid[pos.y][pos.x] = node;
+      setState(currState);
+    }
+    */
+  }
+
   return (
     <div
       className={
-      `node${isStart ? ' start' : ''}${isWall ? ' wall' : ''}${isTarget ? ' target' : ''}${isVisited ? ' visited' : ''}${isPath ? ' path' : ''}`
+      `node${isStart ? ' start' : ''}${wall ? ' wall' : ''}${isTarget ? ' target' : ''}${isVisited ? ' visited' : ''}${isPath ? ' path' : ''}`
       }
       aria-label="Node"
       role="button"

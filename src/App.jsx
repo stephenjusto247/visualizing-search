@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
+import { Context } from './Store';
 import Grid from './components/Grid';
 
 function App() {
+  const [state, setState] = useContext(Context);
+
   return (
-    <Grid numRows={50} numCols={100} />
+    <Grid />
   );
 }
 
