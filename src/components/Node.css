@@ -1,0 +1,21 @@
+.node {
+  height: 1em;
+  width: 1em;
+  border: 1px solid black;
+}
+
+.target {
+  background-color: red;
+}
+
+.wall {
+  background-color: #404040;
+}
+
+.visited {
+  background-color: blue;
+}
+
+.path {
+  background-color: green;
+}
