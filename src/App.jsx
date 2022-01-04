@@ -3,7 +3,7 @@ import Grid from './components/Grid';
 
 function App() {
   return (
-    <Grid />
+    <Grid numRows={50} numCols={100} />
   );
 }
 

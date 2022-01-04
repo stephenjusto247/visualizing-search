@@ -4,6 +4,10 @@
   border: 1px solid black;
 }
 
+.start {
+  background-color: yellow
+}
+
 .target {
   background-color: red;
 }
