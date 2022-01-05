@@ -5,21 +5,39 @@
 }
 
 .start {
-  background-color: yellow
+  background-color: yellow !important;
 }
 
 .target {
-  background-color: red;
+  background-color: red !important;
 }
 
 .wall {
-  background-color: #404040;
+  background-color: #404040 !important;
 }
 
 .visited {
   background-color: blue;
+  animation-name: change;
+  animation-duration: 500ms;
+  animation-timing-function: ease-out;
 }
 
 .path {
   background-color: green;
+  animation-name: change;
+  animation-duration: 500ms;
+  animation-timing-function: ease-out;
+}
+
+@keyframes change {
+  0% {
+    transform: scale(0.5) rotate(180deg);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1)
+  }
 }

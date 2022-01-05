@@ -1,15 +1,16 @@
+let visited = [];
+// up, right, down, left
 const xDirections = [0, 1, 0, -1];
 const yDirections = [-1, 0, 1, 0];
 
-function search(grid, currX, currY, path, visited) {
-  if (grid[currY][currX].isTarget) return true;
-
-  // eslint-disable-next-line no-param-reassign
+function search(grid, currX, currY, path) {
   visited[currY][currX] = true;
   path.push({
     x: currX,
     y: currY,
   });
+
+  if (grid[currY][currX].isTarget) return true;
 
   for (let i = 0; i < 4; i += 1) {
     const nextX = currX + xDirections[i];
@@ -27,7 +28,7 @@ function search(grid, currX, currY, path, visited) {
 
 module.exports = function depthFirstSearch(grid, startX, startY) {
   const path = [];
-  const visited = [];
+  visited = [];
 
   for (let i = 0; i < grid.length; i += 1) {
     const row = [];
