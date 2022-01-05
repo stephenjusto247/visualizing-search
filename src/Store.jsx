@@ -1,4 +1,4 @@
-import React, { useState, createContext, useMemo } from 'react';
+import React, { useState, createContext } from 'react';
 import PropTypes from 'prop-types';
 
 const initialState = {
@@ -9,7 +9,6 @@ export const Context = createContext();
 
 export default function Store({ children }) {
   const [state, setState] = useState(initialState);
-
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <Context.Provider value={[state, setState]}>{children}</Context.Provider>
