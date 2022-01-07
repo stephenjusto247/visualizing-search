@@ -5,9 +5,6 @@ import Node from './Node';
 import { generateUniqueId } from '../lib/utils/generateUniqueId';
 import './Grid.css';
 
-const NUM_ROWS = 50;
-const NUM_COLS = 100;
-
 const propTypes = {
   startPos: PropTypes.shape({
     x: PropTypes.number.isRequired,
@@ -17,9 +14,13 @@ const propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }).isRequired,
+  size: PropTypes.shape({
+    numRows: PropTypes.number.isRequired,
+    numCols: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
-export default function Grid({ startPos, targetPos }) {
+export default function Grid({ startPos, targetPos, size }) {
   const [state, setState] = useContext(Context);
 
   useEffect(() => {
@@ -27,9 +28,9 @@ export default function Grid({ startPos, targetPos }) {
       grid: [],
     };
 
-    for (let y = 0; y < NUM_ROWS; y += 1) {
+    for (let y = 0; y < size.numRows; y += 1) {
       const cols = [];
-      for (let x = 0; x < NUM_COLS; x += 1) {
+      for (let x = 0; x < size.numCols; x += 1) {
         cols.push({
           pos: { x, y },
           isStart: (x === startPos.x && y === startPos.y),

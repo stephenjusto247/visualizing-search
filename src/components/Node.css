@@ -18,21 +18,33 @@
 
 .visited {
   background-color: blue;
-  animation-name: change;
+  animation-name: visit;
   animation-duration: 500ms;
   animation-timing-function: ease-out;
 }
 
 .path {
   background-color: green;
-  animation-name: change;
+  animation-name: visit-path;
   animation-duration: 500ms;
   animation-timing-function: ease-out;
 }
 
-@keyframes change {
+@keyframes visit {
   0% {
     transform: scale(0.5) rotate(180deg);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+
+@keyframes visit-path {
+  0% {
+    transform: scale(0.5) rotate(360deg);
   }
   75% {
     transform: scale(1.2);
