@@ -9,17 +9,16 @@ import breadthFirstSearch from './lib/algorithms/breadthFirstSearch';
 
 function App() {
   const [state, setState] = useContext(Context);
-  const [startPos, setStartPos] = useState({ x: 25, y: 25 });
-  const [targetPos, setTargetPos] = useState({ x: 35, y: 0 });
-  const [gridSize, setGridSize] = useState({ numRows: 40, numCols: 80 });
   const [algorithm, setAlgorithm] = useState('breadth');
-  const [started, setStarted] = useState(false);
   const [needReset, setNeedReset] = useState(false);
   const [delay, setdelay] = useState(9);
+  const GRIDSIZE = { numRows: 40, numCols: 80 };
 
   function animateShortestPath(path) {
+    const currState = { ...state };
     if (path.length <= 0) {
-      setStarted(false);
+      currState.started = false;
+      setState(currState);
       setNeedReset(true);
     }
 
@@ -29,7 +28,8 @@ function App() {
         const element = document.getElementById(`(${pos.x},${pos.y})`);
         element.classList.add('path');
         if (i >= path.length - 1) {
-          setStarted(false);
+          currState.started = false;
+          setState(currState);
           setNeedReset(true);
         }
       }, (100 - (delay * 10)) * i);
@@ -37,9 +37,9 @@ function App() {
   }
 
   function handleReset() {
-    if (!started && needReset) {
-      for (let y = 0; y < gridSize.numRows; y += 1) {
-        for (let x = 0; x < gridSize.numCols; x += 1) {
+    if (!state.started && needReset) {
+      for (let y = 0; y < GRIDSIZE.numRows; y += 1) {
+        for (let x = 0; x < GRIDSIZE.numCols; x += 1) {
           const element = document.getElementById(`(${x},${y})`);
           element.classList.remove('visited');
           element.classList.remove('path');
@@ -50,6 +50,7 @@ function App() {
   }
 
   function runSelectedAlgorithm() {
+    const { startPos } = state;
     switch (algorithm) {
       case 'breadth':
         return breadthFirstSearch(state.grid, startPos.x, startPos.y);
@@ -61,12 +62,15 @@ function App() {
   }
 
   function handleStart() {
-    if (!started) {
+    if (!state.started) {
+      const currState = { ...state };
+      currState.started = true;
+      setState(currState);
       handleReset();
-      setStarted(true);
       const { visitInOrder, shortestPath } = runSelectedAlgorithm();
       if (visitInOrder.length <= 0) {
-        setStarted(false);
+        currState.started = false;
+        setState(currState);
       }
       for (let i = 0; i < visitInOrder.length; i += 1) {
         const pos = visitInOrder[i];
@@ -95,12 +99,11 @@ function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ display: 'flex' }}>
-        <select value={algorithm} onChange={changeAlgorithm}>
+        <select value={algorithm} onChange={changeAlgorithm} disabled={state.started}>
           <option value="breadth">Breadth First Search</option>
           <option value="depth">Depth First Search</option>
         </select>
-        <button type="button" onClick={handleStart} disabled={started}>Start</button>
-        <button type="button" onClick={handleReset} disabled={started}>Reset</button>
+        <button type="button" onClick={handleStart} disabled={state.started}>Start</button>
         <Box sx={{ width: 200 }}>
           <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
             <Slider
@@ -112,12 +115,12 @@ function App() {
               value={delay}
               // eslint-disable-next-line react/jsx-no-bind
               onChange={changeDelay}
-              disabled={started}
+              disabled={state.started}
             />
           </Stack>
         </Box>
       </div>
-      <Grid startPos={startPos} targetPos={targetPos} size={gridSize} />
+      <Grid startPos={state.startPos} targetPos={state.targetPos} size={GRIDSIZE} />
     </div>
   );
 }

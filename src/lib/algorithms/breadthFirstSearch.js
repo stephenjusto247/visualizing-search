@@ -5,18 +5,20 @@ let targetPos = null;
 
 function search(grid, startX, startY, path) {
   const queue = [];
+  const visited = [];
   const parentNode = [];
 
   for (let i = 0; i < grid.length; i += 1) {
     const row = [];
     for (let j = 0; j < grid[i].length; j += 1) {
-      row.push(false);
+      row.push(null);
     }
     parentNode.push(row);
+    visited.push([...row]);
   }
 
   queue.push({ x: startX, y: startY });
-  parentNode[startY][startX] = true;
+  visited[startY][startX] = true;
 
   while (queue.length > 0) {
     const currPos = queue.shift();
@@ -32,9 +34,9 @@ function search(grid, startX, startY, path) {
       const nextY = y + yDirections[i];
       if (nextY >= 0 && nextY < grid.length && nextX >= 0 && nextX < grid[nextY].length) {
         const nextNode = grid[nextY][nextX];
-        if (!nextNode.isWall && !parentNode[nextY][nextX]) {
-          // eslint-disable-next-line no-param-reassign
+        if (!nextNode.isWall && !visited[nextY][nextX]) {
           parentNode[nextY][nextX] = currPos;
+          visited[nextY][nextX] = true;
           queue.push({ x: nextX, y: nextY });
         }
       }
@@ -60,9 +62,10 @@ function reconstructPath(parentNode) {
   let currPos = targetPos;
   while (currPos) {
     const currRow = parentNode[currPos.y];
-    if (currRow) currPos = currRow[currPos.x];
-    else currPos = null;
-    shortestPath.push(currPos);
+    if (currRow) {
+      currPos = currRow[currPos.x];
+    } else currPos = null;
+    if (currPos) shortestPath.push(currPos);
   }
 
   return reverseArray(shortestPath);

@@ -7,26 +7,31 @@ import './Grid.css';
 
 const propTypes = {
   startPos: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }).isRequired,
+    x: PropTypes.number,
+    y: PropTypes.number,
+  }),
   targetPos: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }).isRequired,
+    x: PropTypes.number,
+    y: PropTypes.number,
+  }),
   size: PropTypes.shape({
-    numRows: PropTypes.number.isRequired,
-    numCols: PropTypes.number.isRequired,
-  }).isRequired,
+    numRows: PropTypes.number,
+    numCols: PropTypes.number,
+  }),
+};
+
+const defaultProps = {
+  startPos: { x: 25, y: 25 },
+  targetPos: { x: 35, y: 25 },
+  size: { numRows: 40, numCols: 80 },
 };
 
 export default function Grid({ startPos, targetPos, size }) {
   const [state, setState] = useContext(Context);
 
   useEffect(() => {
-    const newState = {
-      grid: [],
-    };
+    const newState = { ...state };
+    newState.grid = [];
 
     for (let y = 0; y < size.numRows; y += 1) {
       const cols = [];
@@ -77,3 +82,4 @@ export default function Grid({ startPos, targetPos, size }) {
 }
 
 Grid.propTypes = propTypes;
+Grid.defaultProps = defaultProps;

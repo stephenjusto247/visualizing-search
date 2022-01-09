@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 const initialState = {
   grid: [],
+  startPos: { x: 25, y: 25 },
+  targetPos: { x: 35, y: 25 },
+  started: false,
 };
 
 export const Context = createContext();

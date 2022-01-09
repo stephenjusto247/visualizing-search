@@ -26,7 +26,7 @@ export default function Node({
   const [wall, setWall] = useState(isWall);
 
   function handleClick() {
-    if (!isStart && !isTarget) {
+    if (!state.started && !isStart && !isTarget) {
       const currState = { ...state };
       const node = currState.grid[pos.y][pos.x];
       node.isWall = !node.isWall;
