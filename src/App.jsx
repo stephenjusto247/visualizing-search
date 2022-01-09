@@ -10,12 +10,17 @@ function App() {
   const [state, setState] = useContext(Context);
   const [startPos, setStartPos] = useState({ x: 25, y: 25 });
   const [targetPos, setTargetPos] = useState({ x: 50, y: 0 });
-  const [gridSize, setGridSize] = useState({ numRows: 50, numCols: 100 });
+  const [gridSize, setGridSize] = useState({ numRows: 40, numCols: 80 });
   const [started, setStarted] = useState(false);
   const [needReset, setNeedReset] = useState(false);
-  const [delay, setdelay] = useState(7);
+  const [delay, setdelay] = useState(9);
 
   function animateShortestPath(path) {
+    if (path.length <= 0) {
+      setStarted(false);
+      setNeedReset(true);
+    }
+
     for (let i = 0; i < path.length; i += 1) {
       const pos = path[i];
       setTimeout(() => {
@@ -46,14 +51,15 @@ function App() {
     if (!started) {
       handleReset();
       setStarted(true);
-      const path = depthFirstSearch(state.grid, 25, 25);
-      for (let i = 0; i < path.length; i += 1) {
-        const pos = path[i];
+      const { visitInOrder, shortestPath } = depthFirstSearch(state.grid, 25, 25);
+      console.log(visitInOrder);
+      for (let i = 0; i < visitInOrder.length; i += 1) {
+        const pos = visitInOrder[i];
         setTimeout(() => {
           const element = document.getElementById(`(${pos.x},${pos.y})`);
           element.classList.add('visited');
-          if (i >= path.length - 1) {
-            animateShortestPath(path);
+          if (i >= visitInOrder.length - 1) {
+            animateShortestPath(shortestPath);
           }
         }, (100 - (delay * 10)) * i);
       }

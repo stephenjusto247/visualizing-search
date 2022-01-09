@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Context } from '../Store';
 import './Node.css';
 
 const propTypes = {
@@ -21,11 +22,16 @@ const defaultProps = {
 export default function Node({
   pos, isStart, isTarget, isWall,
 }) {
+  const [state, setState] = useContext(Context);
   const [wall, setWall] = useState(isWall);
 
   function handleClick() {
     if (!isStart && !isTarget) {
-      setWall(!wall);
+      const currState = { ...state };
+      const node = currState.grid[pos.y][pos.x];
+      node.isWall = !node.isWall;
+      setWall(node.isWall);
+      setState(currState);
     }
   }
 
@@ -33,7 +39,7 @@ export default function Node({
     <div
       id={`(${pos.x},${pos.y})`}
       className={
-      `node${isStart ? ' start' : ''}${wall ? ' wall' : ''}${isTarget ? ' target' : ''}`
+      `node${isStart ? ' start' : ''}${isTarget ? ' target' : ''}${wall ? ' wall' : ''}`
       }
       aria-label="Node"
       role="button"
