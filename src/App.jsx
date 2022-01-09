@@ -5,12 +5,14 @@ import Slider from '@mui/material/Slider';
 import { Context } from './Store';
 import Grid from './components/Grid';
 import depthFirstSearch from './lib/algorithms/depthFirstSearch';
+import breadthFirstSearch from './lib/algorithms/breadthFirstSearch';
 
 function App() {
   const [state, setState] = useContext(Context);
   const [startPos, setStartPos] = useState({ x: 25, y: 25 });
-  const [targetPos, setTargetPos] = useState({ x: 50, y: 0 });
+  const [targetPos, setTargetPos] = useState({ x: 35, y: 0 });
   const [gridSize, setGridSize] = useState({ numRows: 40, numCols: 80 });
+  const [algorithm, setAlgorithm] = useState('breadth');
   const [started, setStarted] = useState(false);
   const [needReset, setNeedReset] = useState(false);
   const [delay, setdelay] = useState(9);
@@ -47,12 +49,25 @@ function App() {
     }
   }
 
+  function runSelectedAlgorithm() {
+    switch (algorithm) {
+      case 'breadth':
+        return breadthFirstSearch(state.grid, startPos.x, startPos.y);
+      case 'depth':
+        return depthFirstSearch(state.grid, startPos.x, startPos.y);
+      default:
+        return breadthFirstSearch(state.grid, startPos.x, startPos.y);
+    }
+  }
+
   function handleStart() {
     if (!started) {
       handleReset();
       setStarted(true);
-      const { visitInOrder, shortestPath } = depthFirstSearch(state.grid, 25, 25);
-      console.log(visitInOrder);
+      const { visitInOrder, shortestPath } = runSelectedAlgorithm();
+      if (visitInOrder.length <= 0) {
+        setStarted(false);
+      }
       for (let i = 0; i < visitInOrder.length; i += 1) {
         const pos = visitInOrder[i];
         setTimeout(() => {
@@ -73,9 +88,17 @@ function App() {
     }
   }
 
+  function changeAlgorithm(e) {
+    setAlgorithm(e.target.value);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ display: 'flex' }}>
+        <select value={algorithm} onChange={changeAlgorithm}>
+          <option value="breadth">Breadth First Search</option>
+          <option value="depth">Depth First Search</option>
+        </select>
         <button type="button" onClick={handleStart} disabled={started}>Start</button>
         <button type="button" onClick={handleReset} disabled={started}>Reset</button>
         <Box sx={{ width: 200 }}>
