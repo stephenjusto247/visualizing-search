@@ -40,7 +40,7 @@ export default function Grid({ startPos, targetPos, size }) {
           pos: { x, y },
           isStart: (x === startPos.x && y === startPos.y),
           isTarget: (x === targetPos.x && y === targetPos.y),
-          isWall: false,
+          isWall: state.grid[y] ? state.grid[y][x].isWall : false,
           isPath: false,
           isVisited: false,
         });

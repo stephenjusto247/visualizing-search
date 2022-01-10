@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
@@ -14,6 +14,10 @@ function App() {
   const [delay, setdelay] = useState(9);
   const [timeouts, setTimeouts] = useState([]);
   const GRIDSIZE = { numRows: 40, numCols: 80 };
+
+  useEffect(() => {
+    console.log(state.started);
+  }, [state]);
 
   function animateShortestPath(path) {
     const currTimeouts = [...timeouts];
@@ -54,24 +58,31 @@ function App() {
   }
 
   function runSelectedAlgorithm() {
+    const currState = { ...state };
     const { startPos } = state;
+    currState.started = true;
+
     switch (algorithm) {
       case 'breadth':
+        currState.message = 'Executing breadth first search';
+        setState(currState);
         return breadthFirstSearch(state.grid, startPos.x, startPos.y);
       case 'depth':
+        currState.message = 'Executing depth first search';
+        setState(currState);
         return depthFirstSearch(state.grid, startPos.x, startPos.y);
       default:
+        currState.message = 'Executing breadth first search';
+        setState(currState);
         return breadthFirstSearch(state.grid, startPos.x, startPos.y);
     }
   }
 
   function handleStart() {
-    if (!state.started) {
+    if (!state.started && !state.setStart && !state.setTarget) {
       handleReset();
       const currTimeouts = [];
       const currState = { ...state };
-      currState.started = true;
-      setState(currState);
       const { visitInOrder, shortestPath } = runSelectedAlgorithm();
       if (visitInOrder.length <= 0) {
         currState.started = false;
@@ -124,8 +135,9 @@ function App() {
           <option value="breadth">Breadth First Search</option>
           <option value="depth">Depth First Search</option>
         </select>
-        <button type="button" onClick={handleStart} disabled={state.started}>Start</button>
+        <button type="button" onClick={handleStart} disabled={state.started || state.setStart || state.setTarget}>Start</button>
         <button type="button" onClick={handleCancel} disabled={!state.started}>Cancel</button>
+        <button type="button" onClick={handleReset} disabled={!needReset}>Clear Path</button>
         <Box sx={{ width: 200 }}>
           <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
             <Slider
@@ -141,6 +153,9 @@ function App() {
             />
           </Stack>
         </Box>
+      </div>
+      <div style={{ display: 'flex', fontWeight: 'bold' }}>
+        <p>{state.message}</p>
       </div>
       <Grid startPos={state.startPos} targetPos={state.targetPos} size={GRIDSIZE} />
     </div>

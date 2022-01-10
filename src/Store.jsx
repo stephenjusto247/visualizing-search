@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 
 const initialState = {
   grid: [],
-  startPos: { x: 25, y: 25 },
-  targetPos: { x: 35, y: 25 },
+  startPos: { x: 20, y: 20 },
+  targetPos: { x: 40, y: 20 },
   started: false,
+  setStart: false,
+  setTarget: false,
+  message: 'Yellow = Start & Red = Target | Click on the white cells to turn them into walls!',
 };
 
 export const Context = createContext();
