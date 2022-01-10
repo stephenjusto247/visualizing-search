@@ -12,9 +12,11 @@ function App() {
   const [algorithm, setAlgorithm] = useState('breadth');
   const [needReset, setNeedReset] = useState(false);
   const [delay, setdelay] = useState(9);
+  const [timeouts, setTimeouts] = useState([]);
   const GRIDSIZE = { numRows: 40, numCols: 80 };
 
   function animateShortestPath(path) {
+    const currTimeouts = [...timeouts];
     const currState = { ...state };
     if (path.length <= 0) {
       currState.started = false;
@@ -24,7 +26,7 @@ function App() {
 
     for (let i = 0; i < path.length; i += 1) {
       const pos = path[i];
-      setTimeout(() => {
+      currTimeouts.push(setTimeout(() => {
         const element = document.getElementById(`(${pos.x},${pos.y})`);
         element.classList.add('path');
         if (i >= path.length - 1) {
@@ -32,8 +34,10 @@ function App() {
           setState(currState);
           setNeedReset(true);
         }
-      }, (100 - (delay * 10)) * i);
+      }, (100 - (delay * 10)) * i));
     }
+
+    setTimeouts(currTimeouts);
   }
 
   function handleReset() {
@@ -63,10 +67,11 @@ function App() {
 
   function handleStart() {
     if (!state.started) {
+      handleReset();
+      const currTimeouts = [];
       const currState = { ...state };
       currState.started = true;
       setState(currState);
-      handleReset();
       const { visitInOrder, shortestPath } = runSelectedAlgorithm();
       if (visitInOrder.length <= 0) {
         currState.started = false;
@@ -74,14 +79,15 @@ function App() {
       }
       for (let i = 0; i < visitInOrder.length; i += 1) {
         const pos = visitInOrder[i];
-        setTimeout(() => {
+        currTimeouts.push(setTimeout(() => {
           const element = document.getElementById(`(${pos.x},${pos.y})`);
           element.classList.add('visited');
           if (i >= visitInOrder.length - 1) {
             animateShortestPath(shortestPath);
           }
-        }, (100 - (delay * 10)) * i);
+        }, (100 - (delay * 10)) * i));
       }
+      setTimeouts(currTimeouts);
     }
   }
 
@@ -96,6 +102,21 @@ function App() {
     setAlgorithm(e.target.value);
   }
 
+  function handleCancel() {
+    if (state.started) {
+      const currState = { ...state };
+      currState.started = false;
+
+      for (let i = 0; i < timeouts.length; i += 1) {
+        clearTimeout(timeouts[i]);
+      }
+
+      setTimeouts([]);
+      setNeedReset(true);
+      setState(currState);
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ display: 'flex' }}>
@@ -104,6 +125,7 @@ function App() {
           <option value="depth">Depth First Search</option>
         </select>
         <button type="button" onClick={handleStart} disabled={state.started}>Start</button>
+        <button type="button" onClick={handleCancel} disabled={!state.started}>Cancel</button>
         <Box sx={{ width: 200 }}>
           <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
             <Slider
