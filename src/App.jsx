@@ -24,6 +24,7 @@ function App() {
     const currState = { ...state };
     if (path.length <= 0) {
       currState.started = false;
+      currState.message = 'Complete';
       setState(currState);
       setNeedReset(true);
     }
@@ -35,6 +36,7 @@ function App() {
         element.classList.add('path');
         if (i >= path.length - 1) {
           currState.started = false;
+          currState.message = 'Complete';
           setState(currState);
           setNeedReset(true);
         }
@@ -86,6 +88,7 @@ function App() {
       const { visitInOrder, shortestPath } = runSelectedAlgorithm();
       if (visitInOrder.length <= 0) {
         currState.started = false;
+        currState.message = 'Complete';
         setState(currState);
       }
       for (let i = 0; i < visitInOrder.length; i += 1) {
@@ -117,6 +120,7 @@ function App() {
     if (state.started) {
       const currState = { ...state };
       currState.started = false;
+      currState.message = 'Execution cancelled';
 
       for (let i = 0; i < timeouts.length; i += 1) {
         clearTimeout(timeouts[i]);
